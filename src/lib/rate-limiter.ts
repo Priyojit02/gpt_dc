@@ -1,5 +1,6 @@
-import { redis } from '@/lib/redis'
+import { Redis } from '@upstash/redis'
 import { Ratelimit } from '@upstash/ratelimit'
+import { redis } from './redis'
 
 // Create a new ratelimiter, that allows 10 requests per 10 seconds
 export const rateLimiter = new Ratelimit({
