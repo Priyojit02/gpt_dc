@@ -1,7 +1,7 @@
 'use client'
 
-import { MessagesContext } from '@/context/messages'
-import { cn } from '@/lib/utils'
+import { MessagesContext } from '../../context/messages'
+import { cn } from '../../lib/utils'
 import { FC, HTMLAttributes, useContext } from 'react'
 import MarkdownLite from './MarkdownLite'
 

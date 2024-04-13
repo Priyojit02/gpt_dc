@@ -1,9 +1,9 @@
 'use client'
 
-import { MessagesContext } from '@/context/messages'
-import { cn } from '@/lib/utils'
+import { MessagesContext } from '../../context/messages'
+import { cn } from '../../lib/utils'
 
-import { Message } from '@/lib/validators/message'
+import { Message } from '../../lib/validators/message'
 import { useMutation } from '@tanstack/react-query'
 import { CornerDownLeft, Loader2 } from 'lucide-react'
 import { nanoid } from 'nanoid'
@@ -24,7 +24,7 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
     setIsMessageUpdating,
   } = useContext(MessagesContext)
 
-  const { mutate: sendMessage, isLoading } = useMutation({
+  const {mutate:sendMessage, isPending, error} = useMutation({
     mutationKey: ['sendMessage'],
     // include message to later use it in onMutate
     mutationFn: async (_message: Message) => {
@@ -33,8 +33,11 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ messages:[_message]}),
+        body: JSON.stringify({ messages}),
       })
+      if(!response.ok){
+        throw new Error()
+      }
 
       return response.body
     },
@@ -105,7 +108,7 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
           maxRows={4}
           value={input}
           autoFocus
-          disabled={isLoading}
+          disabled={isPending}
           onChange={(e) => setInput(e.target.value)}
           placeholder='Write a message...'
           className='peer disabled:opacity-50 pr-14 resize-none block w-full border-0 bg-zinc-100 py-1.5 text-gray-900 focus:ring-0 text-sm sm:leading-6'
@@ -113,7 +116,7 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
 
         <div className='absolute inset-y-0 right-0 flex py-1.5 pr-1.5'>
           <kbd className='inline-flex items-center rounded border bg-white border-gray-200 px-1 font-sans text-xs text-gray-400'>
-            {isLoading ? (
+            {isPending ? (
               <Loader2 className='w-3 h-3 animate-spin' />
             ) : (
               <CornerDownLeft className='w-3 h-3' />
@@ -131,3 +134,7 @@ const ChatInput: FC<ChatInputProps> = ({ className, ...props }) => {
 }
 
 export default ChatInput
+
+
+
+
